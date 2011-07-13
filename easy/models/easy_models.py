@@ -34,6 +34,14 @@ class easy_shortcuts_mixin:
             if n == 1: return qs.reverse()[0]
             return qs.reverse()[0:n]
         except: return None
+    def random(self, n=1):
+        try:
+            return self.order_by('?')[:n]
+        except:
+            return None
+    def random_404(self, n=1):
+        from django.http import Http404
+        return self.random(n) or raise Http404
     def to_json(self):
         json_serializer = serializers.get_serializer("json")()
         return json_serializer.serialize(self.a(),
