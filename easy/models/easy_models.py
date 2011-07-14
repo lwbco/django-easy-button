@@ -34,6 +34,16 @@ class easy_shortcuts_mixin:
             if n == 1: return qs.reverse()[0]
             return qs.reverse()[0:n]
         except: return None
+    def random(self, n=1):
+        try:
+            return self.order_by('?')[:n]
+        except:
+            return None
+    def random_404(self, n=1):
+        from django.http import Http404
+        r = self.random(n)
+        if r: return r
+        else: raise Http404
     def to_json(self):
         json_serializer = serializers.get_serializer("json")()
         return json_serializer.serialize(self.a(),
@@ -56,6 +66,8 @@ class easy_model_manager(models.Manager, easy_shortcuts_mixin):
         return qs
 
 class easy_model(models.Model):
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     objects = easy_model_manager()
     UNIQUE_MAX_TRIES = 15 # Should be enough to get a random until the space fills up
     class UnableToGenerateIDException(Exception):
