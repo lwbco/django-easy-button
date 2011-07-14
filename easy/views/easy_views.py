@@ -44,9 +44,11 @@ def form_view_data(req, model_class, form_class,
     return out
 
 
-def user_object_detail(req, qs, relation='user__id', 
+def user_object_detail(req, qs, relation='user__id', show_admin_everything=True,
         *args, **kwargs):
-    return object_detail(req, qs.f(**{relation: req.user.id}),
+    if not req.user.is_superuser and not show_admin_everything:
+        qs.f(**{relation: req.user.id})
+    return object_detail(req, ,
             *args, **kwargs)
 def object_detail(req, qs, template='object_detail.html',
         as_json=False, extra_context=None):
@@ -65,7 +67,10 @@ def object_detail(req, qs, template='object_detail.html',
     return render_to_response(template, data,
             context_instance=RequestContext(req))
 
-def user_object_list(req, queryset, relation='user__id', *args, **kwargs):
+def user_object_list(req, queryset, relation='user__id',
+        show_admin_everything=True, *args, **kwargs):
+    if not req.user.is_superuser and not show_admin_everything:
+        qs.f(**{relation: req.user.id})
     user_qs = queryset.filter(**{relation: req.user.id})
     return object_list(req, user_qs, *args, **kwargs)
 
