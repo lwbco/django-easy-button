@@ -67,7 +67,7 @@ def object_detail(req, qs, template='object_detail.html',
     return render_to_response(template, data,
             context_instance=RequestContext(req))
 
-def user_object_list(req, queryset, relation='user__id',
+def user_object_list(req, qs, relation='user__id',
         show_admin_everything=True, *args, **kwargs):
     if not req.user.is_superuser and not show_admin_everything:
         qs = qs.f(**{relation: req.user.id})
