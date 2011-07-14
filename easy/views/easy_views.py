@@ -46,7 +46,7 @@ def form_view_data(req, model_class, form_class,
 
 def user_object_detail(req, qs, relation='user__id', show_admin_everything=True,
         *args, **kwargs):
-    if not req.user.is_superuser and not show_admin_everything:
+    if not req.user.is_superuser or not show_admin_everything:
         qs = qs.f(**{relation: req.user.id})
     return object_detail(req, qs,
             *args, **kwargs)
@@ -69,7 +69,7 @@ def object_detail(req, qs, template='object_detail.html',
 
 def user_object_list(req, qs, relation='user__id',
         show_admin_everything=True, *args, **kwargs):
-    if not req.user.is_superuser and not show_admin_everything:
+    if not req.user.is_superuser or not show_admin_everything:
         qs = qs.f(**{relation: req.user.id})
     return object_list(req, qs, *args, **kwargs)
 
